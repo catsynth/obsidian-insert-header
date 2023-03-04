@@ -28,9 +28,20 @@ export default class InsertHeaderPlugin extends Plugin {
 			id: 'insert-header-command',
 			name: 'Insert Header',
 			editorCallback: (editor: Editor, view: MarkdownView) => {
-				console.log(editor.getSelection());
+				var line = 0
+				console.log(line)
+				console.log(editor.getLine(line))
+				if (editor.getLine(line) == "---") {
+					line = 1
+					while (editor.getLine(line) != '---' && line <= editor.lastLine()) {
+						console.log(line)
+						console.log(editor.getLine(line))		
+						line += 1
+					}
+					line += 2
+				}
 				const pos : EditorPosition = {
-					line: 0,
+					line: line,
 					ch: 0
 				}
 				editor.replaceRange(this.settings.header,
@@ -42,11 +53,7 @@ export default class InsertHeaderPlugin extends Plugin {
 		// This adds a settings tab so the user can configure various aspects of the plugin
 		this.addSettingTab(new InsertHeaderSettingTab(this.app, this));
 
-		// If the plugin hooks up any global DOM events (on parts of the app that doesn't belong to this plugin)
-		// Using this function will automatically remove the event listener when this plugin is disabled.
-		this.registerDomEvent(document, 'click', (evt: MouseEvent) => {
-			console.log('click', evt);
-		});
+
 
 		// When registering intervals, this function will automatically clear the interval when the plugin is disabled.
 		this.registerInterval(window.setInterval(() => console.log('setInterval'), 5 * 60 * 1000));
@@ -80,7 +87,7 @@ class InsertHeaderSettingTab extends PluginSettingTab {
 
 		containerEl.empty();
 
-		containerEl.createEl('h2', {text: 'Settings for my awesome plugin.'});
+		containerEl.createEl('h2', {text: 'Insert Header plubgin.'});
 
 		new Setting(containerEl)
 			.setName('Header')
